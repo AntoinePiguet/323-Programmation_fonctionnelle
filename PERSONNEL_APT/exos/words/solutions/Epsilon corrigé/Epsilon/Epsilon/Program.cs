@@ -1,54 +1,55 @@
-﻿// Les mots
-List<string> words = new List<string>{ "oxygene", "hello", "supernova", "billyboybeatsme", "rouge", "bleu", "jaune" };
+﻿//Auteur : JMY
+//Date   : 03.9.2024 
+//Lieu   : ETML
+//Descr. : programmation fonctionnelle
 
-// percentage, according to chatGPT
-Dictionary<char, double> frequencies = new Dictionary<char, double>
+Console.WriteLine("+-------------------+");
+Console.WriteLine("|JOUER AVEC LES MOTS|");
+Console.WriteLine("+-------------------+");
+
+string[] words = { "aba","bonjour", "hello", "monde", "vert", "rouge", "bleu", "jaune" };
+
+//Version 1
+words.Where(w => !w.Contains('x')).Print("ne contiennent pas la lettre x");
+words.Where(w => w.Count()>=4).Print("ont 4 caractères ou plus");
+words.Where(w => w.Count()==Math.Round(words.Average(w=>w.Length),0)).Print("ont autant de caractères que la moyenne du nombre de caractères de la liste");
+
+//Version 2
+//source de stat: https://www.apprendre-en-ligne.net/crypto/stat/francais.html
+var stats = new List<double>() {8.15, 0.97, 3.15, 3.73, 17.39, 1.12, 0.97,0.85, 7.31, 0.45, 0.02, 5.69, 2.87, 7.12, 5.28, 2.8, 1.21, 6.64, 8.14, 7.22, 6.38, 1.64,0.03, 0.41, 0.28, 0.15 };
+
+words.Select(
+    //Transformation sous forme de tuple pour l’affichage à la fin
+    word => Tuple.Create(word, 
+        word
+            //Calcul de Epsilon
+            .GroupBy(character => character)
+            .Sum(group => stats[(int)group.Key - 97] / 100 / group.Count()))
+    )
+    //Filter
+    .Where(tuple => tuple.Item2 >= 0.0 && tuple.Item2 <= 10.95)
+    
+    //Print
+    .ToList().ForEach(tuple => Console.WriteLine($"Epsilon de {tuple.Item1}: {tuple.Item2}")
+);
+
+/*On verra ça plut tard...*/
+static class MagicExtension
 {
-    { 'a', 7.636 },
-    { 'b', 0.901 },
-    { 'c', 3.260 },
-    { 'd', 3.669 },
-    { 'e', 14.715 },
-    { 'f', 1.066 },
-    { 'g', 0.866 },
-    { 'h', 0.737 },
-    { 'i', 7.529 },
-    { 'j', 0.613 },
-    { 'k', 0.049 },
-    { 'l', 5.456 },
-    { 'm', 2.968 },
-    { 'n', 7.095 },
-    { 'o', 5.796 },
-    { 'p', 2.521 },
-    { 'q', 1.362 },
-    { 'r', 6.553 },
-    { 's', 7.948 },
-    { 't', 7.244 },
-    { 'u', 6.311 },
-    { 'v', 1.628 },
-    { 'w', 0.114 },
-    { 'x', 0.387 },
-    { 'y', 0.308 },
-    { 'z', 0.136 }
-};
 
-double Epsilon (string word, Dictionary<char, double> frequencies)
-{
-    return word
-        .GroupBy(c => c)
-        .ToDictionary(group => group.Key, group => group.Count())
-        .Sum(c => frequencies[c.Key] /100.0 / c.Value);
-}
-
-words
-    .Where(w =>
+    public static void Print<T> (this IEnumerable<T> collection, string prompt)
     {
+        string toPrint = $"{prompt}: ";
+        if (collection == null || collection.Count()==0)
+        {
+            toPrint +="[EMPTY]";
+        }
+        else
+        {
+            toPrint +=  string.Join(",", collection.ToArray<T>());
+            toPrint += $" [{collection.Count()}]";
+        }
 
-        bool v = !w.Contains('x');
-        double e = Epsilon(w, frequencies);
-        return e >= 0.5 && e <= 0.97 && v == true;
-    })
-    .ToList()
-    .ForEach(word => Console.WriteLine(word));
-
-Console.ReadLine();
+        Console.WriteLine(toPrint);
+    }
+}
