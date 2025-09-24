@@ -1,3 +1,7 @@
+using Aspose.Gis;
+using Aspose.Gis.Geometries;
+using System;
+using System.Diagnostics;
 namespace Rando
 {
     internal static class Program
@@ -8,6 +12,7 @@ namespace Rando
         [STAThread]
         static void Main()
         {
+            
             // To customize application configuration such as set high DPI settings or default font,
             // see https://aka.ms/applicationconfiguration.
             ApplicationConfiguration.Initialize();
